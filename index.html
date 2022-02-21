@@ -4,39 +4,18 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>First WebGL</title>
 </head>
 <body>
-    <canvas id="gl-canvas">
-        Oops ... your browser doesn't support the HTML5 canvas element
-    </canvas>        
-</body>
-<script id="vertex-shader-2d" type="notjs">
- 
-    // an attribute will receive data from a buffer
-    attribute vec4 a_position;
-   
-    // all shaders have a main function
-    void main() {
-   
-      // gl_Position is a special variable a vertex shader
-      // is responsible for setting
-      gl_Position = a_position;
-    }   
-</script>
-   
-<script id="fragment-shader-2d" type="notjs">
-   
-    // fragment shaders don't have a default precision so we need
-    // to pick one. mediump is a good default
-    precision mediump float;
-   
-    void main() {
-      // gl_FragColor is a special variable a fragment shader
-      // is responsible for setting
-      gl_FragColor = vec4(1, 0, 0.5, 1); // return reddish-purple
-    }   
-</script>
+    
+    <div>
+        <canvas id="my-canvas" width="800" height="600"></canvas>
+    </div>
+    
+    </canvas>
+    <script src="shader.js"></script>
+    <script src="utils.js"></script>
+    <script src="scriptv2.js"></script>
 
-<script src="https://webglfundamentals.org/webgl/resources/webgl-utils.js"></script>
+</body>
 </html>
