@@ -1,97 +1,177 @@
-function createShader(gl, type, source) {
-    var shader = gl.createShader(type);
-    gl.shaderSource(shader, source);
-    gl.compileShader(shader);
-    var success = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
-    if (success) {
-      return shader;
-    }
-   
-    console.log(gl.getShaderInfoLog(shader));
-    gl.deleteShader(shader);
+var mouseXPos = 0
+var mouseYPos = 0
+var canvas = document.querySelector("#my-canvas");
+
+var gl = canvas.getContext("webgl")
+if (!gl) {
+    console.log("Your browser not supported webgl, retry experimental-webgl")
+    gl = canvas.getContext("experimental-webgl")
 }
 
-function createProgram(gl, vertexShader, fragmentShader) {
-    var program = gl.createProgram();
-    gl.attachShader(program, vertexShader);
-    gl.attachShader(program, fragmentShader);
-    gl.linkProgram(program);
-    var success = gl.getProgramParameter(program, gl.LINK_STATUS);
-    if (success) {
-      return program;
-    }
-   
-    console.log(gl.getProgramInfoLog(program));
-    gl.deleteProgram(program);
+var positionBuffer = gl.createBuffer();
+
+var vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderText);
+var fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderText);
+var program = createProgram(gl, vertexShader, fragmentShader)
+
+
+var positionAttributeLocation = gl.getAttribLocation(program, "vertPosition");
+var resolutionUniformLocation = gl.getUniformLocation(program, "u_resolution");
+var colorUniformLocation = gl.getUniformLocation(program, "u_color");
+
+gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+gl.clearColor(0.8, 0.8, 0.8, 1.0);
+gl.clear(gl.COLOR_BUFFER_BIT);
+gl.useProgram(program);
+gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)
+gl.bufferData(gl.ARRAY_BUFFER, 8 * 20000, gl.STATIC_DRAW);
+ 
+// Tell the attribute how to get data out of positionBuffer (ARRAY_BUFFER)
+var size = 2;          // 2 components per iteration
+var type = gl.FLOAT;   // the data is 32bit floats
+var normalize = false; // don't normalize the data
+var stride = 0;        // 0 = move forward size * sizeof(type) each iteration to get the next position
+var offset = 0;        // start at the beginning of the buffer
+
+
+gl.enableVertexAttribArray(positionAttributeLocation);
+gl.vertexAttribPointer(positionAttributeLocation, size, type, normalize, stride, offset)
+
+
+// Ini karena masih hardcode, nantinya bakalan dari user
+var persegiPanjang = [
+    {
+        position: [586, 29, 404, 555],
+        color: [0.5, 0.5, 0.5],
+        middlePoint: [0, 0],
+    },
+    {
+        position: [679, 426, 105, 167],
+        color: [1, 0, 0],
+        middlePoint: [0, 0],
+    },
+
+]
+
+for (let i = 0; i < persegiPanjang.length; i++) {
+    var x1 = persegiPanjang[i].position[0]
+    var x2 = persegiPanjang[i].position[1]
+    var y1 = persegiPanjang[i].position[2]
+    var y2 = persegiPanjang[i].position[3]
+    var titikTengah = []
+    titikTengah.push((x1 + x2)/2)
+    titikTengah.push((y1 + y2)/2)
+    persegiPanjang[i].middlePoint = titikTengah
+    
 }
 
-window.onload = function main(){
-    // Get A WebGL context
-    var canvas = document.querySelector( "gl-canvas" );
-    var gl = canvas.getContext("webgl");
-    if ( !gl ) { alert( "WebGL isn't available" ); }
-    
-    // Get the strings for our GLSL shaders
-    var vertexShaderSource = document.querySelector("#vertex-shader-2d").text;
-    var fragmentShaderSource = document.querySelector("#fragment-shader-2d").text;
+function drawCanvas() {
 
-    // create GLSL shaders, upload the GLSL source, compile the shaders
-    var vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
-    var fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
-
-    // Link the two shaders into a program
-    var program = createProgram(gl, vertexShader, fragmentShader);
-
-    // look up where the vertex data needs to go.
-    var positionAttributeLocation = gl.getAttribLocation(program, "a_position");
-
-    // Create a buffer and put three 2d clip space points in it
-    var positionBuffer = gl.createBuffer();
-
-    // Bind it to ARRAY_BUFFER (think of it as ARRAY_BUFFER = positionBuffer)
-    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-
-    var positions = [
-        0, 0,
-        0, 0.5,
-        0.7, 0,
-    ];
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
-    
-    // code above this line is initialization code.
-    // code below this line is rendering code.
-    
-    webglUtils.resizeCanvasToDisplaySize(gl.canvas);
-    
-    // Tell WebGL how to convert from clip space to pixels
-    gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-    
-    // Clear the canvas
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT);
     
-    // Tell it to use our program (pair of shaders)
-    gl.useProgram(program);
-    
-    // Turn on the attribute
-    gl.enableVertexAttribArray(positionAttributeLocation);
-    
     // Bind the position buffer.
-    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-    
-    // Tell the attribute how to get data out of positionBuffer (ARRAY_BUFFER)
-    var size = 2;          // 2 components per iteration
-    var type = gl.FLOAT;   // the data is 32bit floats
-    var normalize = false; // don't normalize the data
-    var stride = 0;        // 0 = move forward size * sizeof(type) each iteration to get the next position
-    var offset = 0;        // start at the beginning of the buffer
-    gl.vertexAttribPointer(
-        positionAttributeLocation, size, type, normalize, stride, offset);
-    
-    // draw
-    var primitiveType = gl.TRIANGLES;
-    var offset = 0;
-    var count = 3;
-    gl.drawArrays(primitiveType, offset, count);
+    // gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+    gl.uniform2f(resolutionUniformLocation, gl.canvas.width, gl.canvas.height);
+    var m = 0;
+    for (var j = 0; j < persegiPanjang.length; j++) {
+        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+        var x1 = persegiPanjang[j].position[0]
+        var x2 = persegiPanjang[j].position[1]
+        var y1 = persegiPanjang[j].position[2]
+        var y2 = persegiPanjang[j].position[3]
+        var r = persegiPanjang[j].color[0]
+        var g = persegiPanjang[j].color[1]
+        var b = persegiPanjang[j].color[2]
+        
+        createPersegiPanjang(gl, x1, x2, y1, y2)
+        gl.uniform4f(colorUniformLocation, r, g, b, 1);
+        var primitiveType = gl.TRIANGLES;
+        var offset = 0;
+        var count = 6;
+        gl.drawArrays(primitiveType, offset, count);
+    }
 }
-  
+
+/**
+ * Get the choosen shape in HTML radiobutton
+ * @returns {String}    The choosen shape
+ */
+function getShape() {
+    var shapeChoice = document.getElementsByName("shape");
+    for (let i = 0; i < shapeChoice.length; i++) {
+        if (shapeChoice[i].checked) {
+            return shapeChoice[i].value
+        }
+    }
+}
+
+/**
+ * Get the inputted color in HTML
+ * @returns {String}    Hex value of color
+ */
+ function getColor() {
+    var colorChoice = document.getElementById("color").value
+    return colorChoice;
+}
+
+/**
+ * Saving canvas image
+ * @param {*} params 
+ */
+function saveFile(params) {
+    console.log("Save button clicked")
+    // TODO    
+}
+
+/**
+ * Loading canvas image
+ * @param {*} params 
+ */
+function loadFile(params) {
+    console.log("Load button clicked")
+    // TODO
+}
+
+drawCanvas()
+
+// Fungsionalitas Geser Persegi Panjang
+
+var isWantToMove = true
+var secondClick = false
+var chosen = []
+
+canvas.addEventListener("click",function(event) {
+    var shape = getShape()
+    var color = getColor()
+    console.log("Ini shape: ", shape)
+    console.log("Ini color: ", color)
+
+    if (isWantToMove) {
+        if (!secondClick) {
+            // The first click, check if user click inside a rectangle
+            var posX = event.pageX
+            var posY = event.pageY
+            for (let i = 0; i < persegiPanjang.length; i++) {
+                if (checkInsidePersegiPanjang(persegiPanjang[i].position, posX, posY)) {
+                    chosen.push(i)
+                    secondClick = true
+                }
+            }
+            
+        } else {
+            // Second Click, move the rectangular
+            var posX = event.pageX
+            var posY = event.pageY
+            chosen.forEach(idx => {
+                var deltaX = posX - persegiPanjang[idx].middlePoint[0]
+                var deltaY = posY - persegiPanjang[idx].middlePoint[1]
+                persegiPanjang[idx].position, persegiPanjang[idx].middlePoint = translasiPersegiPanjang(persegiPanjang[idx].position, persegiPanjang[idx].middlePoint, deltaX, deltaY)
+            });
+            drawCanvas()
+            secondClick = false
+            chosen = []
+        }
+    }
+}, false)
+

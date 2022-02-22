@@ -7,15 +7,28 @@
     <title>First WebGL</title>
 </head>
 <body>
-    
-    <div>
+    <div class="gl-canvas">
         <canvas id="my-canvas" width="800" height="600"></canvas>
     </div>
     
-    </canvas>
+    <div class="menu">
+        <div class="menu-shape">
+            <input type="radio" name="shape" id="line" value="Line" checked> Line
+            <input type="radio" name="shape" id="square" value="Square"> Square
+            <input type="radio" name="shape" id="rectangle" value="Rectangle"> Rectangle
+            <input type="radio" name="shape" id="polygon" value="Polygon"> Polygon
+        </div>
+        <div class="menu-color">
+            <p>Select your color: </p>
+            <input type="color" id="color" id="color" value="#000000">
+        </div>
+        <div class="menu-saveload">
+            <button id="save" onclick="saveFile()">Save</button>
+            <button id="load" onclick="loadFile()">Load</button>
+        </div>
+    </div>
     <script src="shader.js"></script>
-    <script src="utils.js"></script>
-    <script src="scriptv2.js"></script>
-
+    <script src="rectangle.js"></script>
+    <script src="main.js"></script>
 </body>
 </html>
