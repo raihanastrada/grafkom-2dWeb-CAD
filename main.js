@@ -24,7 +24,7 @@ gl.clearColor(0.8, 0.8, 0.8, 1.0);
 gl.clear(gl.COLOR_BUFFER_BIT);
 gl.useProgram(program);
 gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)
-gl.bufferData(gl.ARRAY_BUFFER, 8 * 20000, gl.STATIC_DRAW);
+// gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(titik), gl.STATIC_DRAW);
  
 // Tell the attribute how to get data out of positionBuffer (ARRAY_BUFFER)
 var size = 2;          // 2 components per iteration
@@ -50,8 +50,20 @@ var persegiPanjang = [
         color: [1, 0, 0],
         middlePoint: [0, 0],
     },
+];
 
-]
+var garis = [
+    {
+        position: [10, 100, 30, 200],
+        color: [0.5, 0.5, 0.5],
+        middlePoint: [0, 0],
+    },
+    {
+        position: [20, 400, 100, 400],
+        color: [1, 0, 0],
+        middlePoint: [0, 0],
+    },
+];
 
 for (let i = 0; i < persegiPanjang.length; i++) {
     var x1 = persegiPanjang[i].position[0]
@@ -62,7 +74,6 @@ for (let i = 0; i < persegiPanjang.length; i++) {
     titikTengah.push((x1 + x2)/2)
     titikTengah.push((y1 + y2)/2)
     persegiPanjang[i].middlePoint = titikTengah
-    
 }
 
 function drawCanvas() {
@@ -73,7 +84,21 @@ function drawCanvas() {
     // Bind the position buffer.
     // gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
     gl.uniform2f(resolutionUniformLocation, gl.canvas.width, gl.canvas.height);
-    var m = 0;
+    // var m = 0;
+    for (var i = 0; i < garis.length; i++) {
+        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+        var x1 = garis[i].position[0]
+        var x2 = garis[i].position[1]
+        var y1 = garis[i].position[2]
+        var y2 = garis[i].position[3]
+        var r = garis[i].color[0]
+        var g = garis[i].color[1]
+        var b = garis[i].color[2]
+
+        createGaris(gl, x1, x2, y1, y2)
+        gl.uniform4f(colorUniformLocation, r, g, b, 1);
+        gl.drawArrays(gl.LINES, 0, 2);
+    }
     for (var j = 0; j < persegiPanjang.length; j++) {
         gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
         var x1 = persegiPanjang[j].position[0]
@@ -91,6 +116,7 @@ function drawCanvas() {
         var count = 6;
         gl.drawArrays(primitiveType, offset, count);
     }
+    
 }
 
 /**
@@ -110,7 +136,7 @@ function getShape() {
  * Get the inputted color in HTML
  * @returns {String}    Hex value of color
  */
- function getColor() {
+function getColor() {
     var colorChoice = document.getElementById("color").value
     return colorChoice;
 }
