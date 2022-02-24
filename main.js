@@ -227,7 +227,9 @@ canvas.addEventListener("click",function(event) {
                 chosen.forEach(idx => {
                     var deltaX = posX - persegiPanjang[idx].middlePoint[0]
                     var deltaY = posY - persegiPanjang[idx].middlePoint[1]
-                    persegiPanjang[idx].position, persegiPanjang[idx].middlePoint = translasiPersegiPanjang(persegiPanjang[idx].position, persegiPanjang[idx].middlePoint, deltaX, deltaY)
+                    var temp = translasiPersegiPanjang(persegiPanjang[idx].position, persegiPanjang[idx].middlePoint, deltaX, deltaY)
+                    persegiPanjang[idx].position = temp[0]
+                    persegiPanjang[idx].middlePoint = temp[1]
                 });
                 drawCanvas()
                 secondClickMove = false
@@ -235,6 +237,21 @@ canvas.addEventListener("click",function(event) {
             }
         }
 
+    }
+
+    if (isWantToChangeColor) {
+        if (shape === "rectangle" || shape === "square") {
+            // Change Color for chosen rectangle or square
+            var posX = event.pageX
+            var posY = event.pageY
+            for (let i = 0; i < persegiPanjang.length; i++) {
+                if (checkInsidePersegiPanjang(persegiPanjang[i].position, posX, posY)) {
+                    chosen.push(i)
+                    persegiPanjang[i].color =  changeColor(persegiPanjang[i].color, color[0], color[1], color[2])
+                }
+            }
+            drawCanvas()
+        }
     }
 }, false)
 

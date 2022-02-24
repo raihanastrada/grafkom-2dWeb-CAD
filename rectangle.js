@@ -22,5 +22,12 @@ function translasiPersegiPanjang(arrPos, arrMidPoint, deltaX, deltaY) {
     arrPos[3] = arrPos[3] + deltaY
     arrMidPoint[0] = (arrPos[0] + arrPos[1]) / 2
     arrMidPoint[1] = (arrPos[2] + arrPos[3]) / 2
-    return arrPos, arrMidPoint
+    return [arrPos, arrMidPoint]
+}
+
+function changeColor(arrColor, r, g, b) {
+    arrColor[0] = r
+    arrColor[1] = g
+    arrColor[2] = b
+    return arrColor
 }
