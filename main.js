@@ -177,7 +177,7 @@ canvas.addEventListener("click",function(event) {
             var y1 = posY - (size * proporsiY)
             var y2 = posY + (size * proporsiY)
             var midPointX = (x1 + x2) / 2
-            var midPointY = (x1 + x2) / 2
+            var midPointY = (y1 + y2) / 2
             
             persegiPanjang.push({
                 position: [x1, x2, y1, y2],
@@ -193,7 +193,7 @@ canvas.addEventListener("click",function(event) {
             var y1 = posY 
             var y2 = posY
             var midPointX = (x1 + x2) / 2
-            var midPointY = (x1 + x2) / 2
+            var midPointY = (y1 + y2) / 2
 
             garis.push({
                 position: [x1, x2, y1, y2],
