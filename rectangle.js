@@ -10,7 +10,7 @@ function createPersegiPanjang(gl, x1, x2, y1, y2) {
 }
 
 function checkInsidePersegiPanjang(arrPosObject, x, y) {
-    if ((x <= arrPosObject[0] && x >= arrPosObject[1]) && (y >= arrPosObject[2] && y <= arrPosObject[3])) {
+    if ((x >= arrPosObject[0] && x <= arrPosObject[1]) && (y >= arrPosObject[2] && y <= arrPosObject[3])) {
         return true
     }
 }
