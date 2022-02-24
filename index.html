@@ -10,23 +10,49 @@
     <div class="gl-canvas">
         <canvas id="my-canvas" width="800" height="600"></canvas>
     </div>
-    
+    <div class="menu-option">
+        <input type="radio" name="option" id="create" value="create">
+        <label for="create"> Buat Shape</label>
+        <input type="radio" name="option" id="move" value="move">
+        <label for="move"> Geser Shape</label>
+        <input type="radio" name="option" id="changeColor" value="changeColor">
+        <label for="changeColor"> Ganti Warna</label>
+        <input type="radio" name="option" id="changeSize" value="changeSize">
+        <label for="changeSize"> Ubah ukuran persegi</label>
+
+    </div>
     <div class="menu">
         <div class="menu-shape">
-            <input type="radio" name="shape" id="line" value="Line" checked> Line
-            <input type="radio" name="shape" id="square" value="Square"> Square
-            <input type="radio" name="shape" id="rectangle" value="Rectangle"> Rectangle
-            <input type="radio" name="shape" id="polygon" value="Polygon"> Polygon
+            <input type="radio" name="shape" id="line" value="line" >
+            <label for="line">Line</label>
+            <input type="radio" name="shape" id="square" value="square">
+            <label for="square">Square</label>
+            <input type="radio" name="shape" id="rectangle" value="rectangle">
+            <label for="rectangle">Rectangle</label>
+            <input type="radio" name="shape" id="polygon" value="polygon">
+            <label for="polygon">Polygon</label>
+        </div>
+        <div>
+            <input type="number" name="shape" id="polygonSisi" placeholder="Jumlah Sisi Polygon">
+            <input type="number" name="shape" id="proporsiXRectangle" placeholder="Proporsi X">
+            <input type="number" name="shape" id="proporsiYRectangle" placeholder="Proporsi Y">
         </div>
         <div class="menu-color">
             <p>Select your color: </p>
             <input type="color" id="color" id="color" value="#000000">
+        </div>
+
+        <div class="menu-size">
+            <input id="widthSlide" type="range" min="1" max="10" step="1">
+            <label for="widthSlide">Ukuran</label>
+
         </div>
         <div class="menu-saveload">
             <button id="save" onclick="saveFile()">Save</button>
             <button id="load" onclick="loadFile()">Load</button>
         </div>
     </div>
+    <script src="utils.js"></script>
     <script src="shader.js"></script>
     <script src="line.js"></script>
     <script src="rectangle.js"></script>
