@@ -253,5 +253,27 @@ canvas.addEventListener("click",function(event) {
             drawCanvas()
         }
     }
+
+    if (isWantToChangeSize) {
+        if (shape === "square") {
+            // Change Color for chosen rectangle or square
+            var posX = event.pageX
+            var posY = event.pageY
+            for (let i = 0; i < persegiPanjang.length; i++) {
+                if (checkInsidePersegiPanjang(persegiPanjang[i].position, posX, posY)) {
+                    chosen.push(i)
+                    proporsiX = 10
+                    proporsiY = 10
+                    persegiPanjang[i].position[0] = persegiPanjang[i].position[0] - (size * proporsiX)
+                    persegiPanjang[i].position[1] = persegiPanjang[i].position[1] + (size * proporsiX)
+                    persegiPanjang[i].position[2] = persegiPanjang[i].position[2] - (size * proporsiY)
+                    persegiPanjang[i].position[3] = persegiPanjang[i].position[3] + (size * proporsiY)
+                    persegiPanjang[i].middlePoint[0] = (persegiPanjang[i].position[0] + persegiPanjang[i].position[1]) / 2
+                    persegiPanjang[i].middlePoint[1] = (persegiPanjang[i].position[2] + persegiPanjang[i].position[3]) / 2
+                }
+            }
+            drawCanvas()
+        }
+    }
 }, false)
 
