@@ -41,12 +41,12 @@ gl.vertexAttribPointer(positionAttributeLocation, size, type, normalize, stride,
 // Ini karena masih hardcode, nantinya bakalan dari user
 var persegiPanjang = [
     {
-        position: [586, 29, 404, 555],
+        position: [29, 586, 404, 555],
         color: [0.5, 0.5, 0.5],
         middlePoint: [0, 0],
     },
     {
-        position: [679, 426, 105, 167],
+        position: [426, 679, 105, 167],
         color: [1, 0, 0],
         middlePoint: [0, 0],
     },
@@ -119,85 +119,122 @@ function drawCanvas() {
     
 }
 
-/**
- * Get the choosen shape in HTML radiobutton
- * @returns {String}    The choosen shape
- */
-function getShape() {
-    var shapeChoice = document.getElementsByName("shape");
-    for (let i = 0; i < shapeChoice.length; i++) {
-        if (shapeChoice[i].checked) {
-            return shapeChoice[i].value
-        }
-    }
-}
-
-/**
- * Get the inputted color in HTML
- * @returns {String}    Hex value of color
- */
-function getColor() {
-    var colorChoice = document.getElementById("color").value
-    return colorChoice;
-}
-
-/**
- * Saving canvas image
- * @param {*} params 
- */
-function saveFile(params) {
-    console.log("Save button clicked")
-    // TODO    
-}
-
-/**
- * Loading canvas image
- * @param {*} params 
- */
-function loadFile(params) {
-    console.log("Load button clicked")
-    // TODO
-}
-
 drawCanvas()
 
 // Fungsionalitas Geser Persegi Panjang
 
-var isWantToMove = true
-var secondClick = false
+var secondClickMove = false
 var chosen = []
 
 canvas.addEventListener("click",function(event) {
+    var isWantToMove = false
+    var isWantToCreate = false
+    var isWantToChangeColor = false
+    var isWantToChangeSize = false
+    
     var shape = getShape()
     var color = getColor()
+    var option = getOption()
+    var size = getShapeSize()
+    var color = getColor()
+
+    var jumlahSisiPolygon = 0
+
     console.log("Ini shape: ", shape)
     console.log("Ini color: ", color)
+    console.log("Option: ", option)
 
-    if (isWantToMove) {
-        if (!secondClick) {
-            // The first click, check if user click inside a rectangle
-            var posX = event.pageX
-            var posY = event.pageY
-            for (let i = 0; i < persegiPanjang.length; i++) {
-                if (checkInsidePersegiPanjang(persegiPanjang[i].position, posX, posY)) {
-                    chosen.push(i)
-                    secondClick = true
+    if (option === "create") {
+        isWantToCreate = true
+    } else if (option === "move") {
+        isWantToMove = true
+        
+    } else if (option === "changeColor") {
+        isWantToChangeColor = true
+    } else if (option === "changeSize") {
+        isWantToChangeSize = true
+    }
+
+    if (isWantToCreate) {
+        var posX = event.pageX
+        var posY = event.pageY
+        if (shape === "rectangle" || shape === "square") {
+            var proporsiRectangle = getProporsiXYRectangle()
+            var proporsiX = proporsiRectangle[0]
+            var proporsiY = proporsiRectangle[1]
+            if (shape==="square") {
+                proporsiX = 10
+                proporsiY = 10
+            } else {
+                if (proporsiX === 0 || proporsiY === 0 || !proporsiX || !proporsiY) {
+                    alert("Proporsi X atau Y tidak boleh 0!")
+                    return
                 }
             }
+
+            var x1 = posX - (size * proporsiX)
+            var x2 = posX + (size * proporsiX)
+            var y1 = posY - (size * proporsiY)
+            var y2 = posY + (size * proporsiY)
+            var midPointX = (x1 + x2) / 2
+            var midPointY = (x1 + x2) / 2
             
-        } else {
-            // Second Click, move the rectangular
-            var posX = event.pageX
-            var posY = event.pageY
-            chosen.forEach(idx => {
-                var deltaX = posX - persegiPanjang[idx].middlePoint[0]
-                var deltaY = posY - persegiPanjang[idx].middlePoint[1]
-                persegiPanjang[idx].position, persegiPanjang[idx].middlePoint = translasiPersegiPanjang(persegiPanjang[idx].position, persegiPanjang[idx].middlePoint, deltaX, deltaY)
-            });
+            persegiPanjang.push({
+                position: [x1, x2, y1, y2],
+                color: [color[0], color[1], color[2]],
+                middlePoint: [midPointX, midPointY]
+            })
+            console.log(persegiPanjang) 
             drawCanvas()
-            secondClick = false
-            chosen = []
+
+        } else if (shape === "line") {
+            var x1 = posX - (size * 20)
+            var x2 = posX + (size * 20)
+            var y1 = posY 
+            var y2 = posY
+            var midPointX = (x1 + x2) / 2
+            var midPointY = (x1 + x2) / 2
+
+            garis.push({
+                position: [x1, x2, y1, y2],
+                color: [color[0], color[1], color[2]],
+                middlePoint: [midPointX, midPointY]
+            })
+            drawCanvas()
+        } else if (shape === "polygon") {
+            console.log("INSERT TO ARRAY OF POLYGON OBJECT")
         }
+
+    }
+
+    if (isWantToMove) {
+        if (shape === "rectangle" || shape === "square") {
+            if (!secondClickMove) {
+                // The first click, check if user click inside a rectangle
+                var posX = event.pageX
+                var posY = event.pageY
+                for (let i = 0; i < persegiPanjang.length; i++) {
+                    if (checkInsidePersegiPanjang(persegiPanjang[i].position, posX, posY)) {
+                        chosen.push(i)
+                        secondClickMove = true
+                    }
+                }
+                
+            } else {
+                // Second Click, move the rectangular
+                var posX = event.pageX
+                var posY = event.pageY
+                chosen.forEach(idx => {
+                    var deltaX = posX - persegiPanjang[idx].middlePoint[0]
+                    var deltaY = posY - persegiPanjang[idx].middlePoint[1]
+                    persegiPanjang[idx].position, persegiPanjang[idx].middlePoint = translasiPersegiPanjang(persegiPanjang[idx].position, persegiPanjang[idx].middlePoint, deltaX, deltaY)
+                });
+                drawCanvas()
+                secondClickMove = false
+                chosen = []
+            }
+        }
+
     }
 }, false)
 
