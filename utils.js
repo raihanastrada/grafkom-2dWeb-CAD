@@ -41,12 +41,64 @@ function getProporsiXYRectangle() {
 
 function saveFile(params) {
     console.log("Save button clicked")
-    // TODO    
+    const a = document.createElement('a');
+    const isi = [
+        "Persegi Panjang: ",
+        persegiPanjang,
+        "Persegi: ",
+        persegi,
+        "Garis: ",
+        garis,
+        "Polygon: ",
+        polygon
+    ]
+    const blob = new Blob([JSON.stringify(isi)]);
+    a.href = URL.createObjectURL(blob);
+    a.download = 'CAD-Download';
+    a.click();
+    console.log("HERE")
 }
 
 function loadFile(params) {
     console.log("Load button clicked")
-    // TODO
+    var file = document.getElementById("load")
+    console.log(file.value)
+
+}
+
+var file = document.getElementById("load")
+
+file.onchange = function(event) {
+    var inputFile = file.files[0]
+    if (inputFile) {
+        var reader = new FileReader();
+        reader.readAsText(inputFile);
+        reader.onload = function (evt) {
+            var isi = JSON.parse(evt.target.result);
+            for (let i = 0; i < isi.length; i++) {
+                if (i%2 === 0) {
+                    if (isi[i] === "Persegi Panjang: ") {
+                        i = i + 1
+                        persegiPanjang = []
+                        persegiPanjang = isi[i]
+                    } else if (isi[i] === "Persegi: ") {
+                        i = i + 1
+                        persegi = []
+                        persegi = isi[i]
+                    } else if (isi[i] === "Garis: ") {
+                        i = i + 1
+                        garis = []
+                        garis = isi[i]
+                    } else if (isi[i] === "Polygon: ") {
+                        i = i + 1
+                        polygon = []
+                        polygon = isi[i]
+                    }
+                }
+            }
+            drawCanvas()
+        }
+    }
 }
 
 function getShape() {
