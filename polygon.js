@@ -3,6 +3,35 @@ function createPolygon(gl, polygonArray) {
     gl.bufferData(gl.ARRAY_BUFFER, points, gl.STATIC_DRAW);
 }
 
+function getMiddlePoint(arrPos) {
+    let sumX = 0;
+    let sumY = 0;
+    let n = arrPos.length/2
+
+    for (let i = 0; i < arrPos.length; i++) {
+        if (i % 2 == 0) {
+            sumX += arrPos[i]
+        } else {
+            sumY += arrPos[i]
+        }
+    }
+    return [sumX/n, sumY/n]
+}
+
+function translasiPolygon(arrPos, posX, posY) {
+    let middlePoint = getMiddlePoint(arrPos)
+    let deltaX = posX - middlePoint[0]
+    let deltaY = posY - middlePoint[1]
+
+    for (let i = 0; i < arrPos.length; i++) {
+        if (i % 2 == 0) {
+            arrPos[i] = arrPos[i] + deltaX    
+        } else {
+            arrPos[i] = arrPos[i] + deltaY
+        }
+    }
+}
+
 /* orientation, onLine, checkIntersect, & checkInPolygon function was referenced & modified from 
 https://www.geeksforgeeks.org/how-to-check-if-a-given-point-lies-inside-a-polygon/#:~:text=1)%20Draw%20a%20horizontal%20line,true%2C%20then%20point%20lies%20outside.*/
 
