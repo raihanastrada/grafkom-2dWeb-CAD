@@ -152,6 +152,17 @@ function drawCanvas() {
     
 }
 
+// Fungsionalitas Geser Persegi Panjang
+var secondClickMove = false
+var chosen = []
+var isX1Change = false
+var isX2Change = false
+
+var isCreatingPolygon = false;
+var polygonPoints = [];
+var polygonColor = [];
+var polygonNodes;
+
 canvas.addEventListener("click",function(event) {
     var isWantToMove = false
     var isWantToCreate = false
@@ -402,34 +413,38 @@ canvas.addEventListener("click",function(event) {
             drawCanvas()
         } else if (shape === "line") {
             if (!secondClickMove) {
-                var x1 = false
-                var x2 = false
                 var posX = event.pageX
                 var posY = event.pageY
                 for (let i = 0; i < garis.length; i++) {
                     if (checkNearGaris(garis[i].position, posX, posY)) {
                         chosen.push(i)
                         secondClickMove = true
-                        if(checkJarak(garis[i].position, posX)) {
-                            x1 = true
-                        } else { x2 = true }
+                        if(checkJarak(garis[i].position, posX, posY)) {
+                            isX1Change = true
+                        } else { 
+                            isX2Change = true 
+                        }
                     }
                 }
             } else { //secondClickMove = true
                 var posX = event.pageX
                 var posY = event.pageY
                 chosen.forEach(idx => {
-                    if (x1) { //x1 true
+                    if (isX1Change) { //x1 true
                         garis[idx].position[0] = posX
                         garis[idx].position[2] = posY
-                    } else { //x2 true
+                    } else { //isX2Change true
                         garis[idx].position[1] = posX
                         garis[idx].position[3] = posY
                     }
+                    garis[idx].middlePoint[0] = (garis[idx].position[0] + garis[idx].position[1]) / 2
+                    garis[idx].middlePoint[1] = (garis[idx].position[2] + garis[idx].position[3]) / 2
                 });
                 drawCanvas()
                 secondClickMove = false
                 chosen = []
+                isX1Change = false
+                isX2Change = false
             }
         }
     }
