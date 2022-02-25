@@ -361,8 +361,8 @@ canvas.addEventListener("click",function(event) {
             drawCanvas()
         } else if (shape === "line") {
             if (!secondClickMove) {
-                let x1 = false
-                let x2 = false
+                var x1 = false
+                var x2 = false
                 var posX = event.pageX
                 var posY = event.pageY
                 for (let i = 0; i < garis.length; i++) {
