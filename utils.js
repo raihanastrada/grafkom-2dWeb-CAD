@@ -8,10 +8,6 @@ function hexToRGB(value) {
     return value
 }
 
-/**
- * Get the inputted color in HTML
- * @returns {String}    Hex value of color
- */
 function getColor() {
     var colorChoice = document.getElementById("color").value
     colorChoice = hexToRGB(colorChoice)
@@ -28,7 +24,7 @@ function getOption(){
 }
 
 function getPolygonSisi() {
-    var polygonSisi = document.getElementById("polygonSisi")
+    var polygonSisi = document.getElementById("polygonSisi").value
     return polygonSisi
 }
 
@@ -43,29 +39,17 @@ function getProporsiXYRectangle() {
     return [proporsiXInput, proporsiYInput]
 }
 
-/**
- * Saving canvas image
- * @param {*} params 
- */
 function saveFile(params) {
     console.log("Save button clicked")
     // TODO    
 }
 
-/**
- * Loading canvas image
- * @param {*} params 
- */
 function loadFile(params) {
     console.log("Load button clicked")
     // TODO
 }
 
-/**
- * Get the choosen shape in HTML radiobutton
- * @returns {String}    The choosen shape
- */
- function getShape() {
+function getShape() {
     var shapeChoice = document.getElementsByName("shape");
     for (let i = 0; i < shapeChoice.length; i++) {
         if (shapeChoice[i].checked) {
