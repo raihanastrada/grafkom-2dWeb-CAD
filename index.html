@@ -33,9 +33,9 @@
             <label for="polygon">Polygon</label>
         </div>
         <div>
-            <input type="number" name="shape" id="polygonSisi" placeholder="Jumlah Sisi Polygon">
-            <input type="number" name="shape" id="proporsiXRectangle" placeholder="Proporsi X">
-            <input type="number" name="shape" id="proporsiYRectangle" placeholder="Proporsi Y">
+            <input type="number" name="shape" id="polygonSisi" placeholder="Jumlah Sisi Polygon" min="3" disabled>
+            <input type="number" name="shape" id="proporsiXRectangle" placeholder="Proporsi X" min="1" disabled>
+            <input type="number" name="shape" id="proporsiYRectangle" placeholder="Proporsi Y" min="1" disabled>
         </div>
         <div class="menu-color">
             <p>Select your color: </p>
@@ -50,14 +50,15 @@
 
         </div>
         <div class="menu-saveload">
-            <button id="save" onclick="saveFile()">Save</button>
-            <button id="load" onclick="loadFile()">Load</button>
+            <button id="save"">Save</button>
+            <input type="file" id="load">
         </div>
     </div>
     <script src="utils.js"></script>
     <script src="shader.js"></script>
     <script src="line.js"></script>
     <script src="rectangle.js"></script>
+    <script src="polygon.js"></script>
     <script src="main.js"></script>
 </body>
 </html>

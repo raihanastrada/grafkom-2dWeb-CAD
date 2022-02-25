@@ -2,104 +2,84 @@ var mouseXPos = 0
 var mouseYPos = 0
 var canvas = document.querySelector("#my-canvas");
 
+// Get A WebGL context
+var canvas = document.querySelector("#my-canvas");
 var gl = canvas.getContext("webgl")
 if (!gl) {
     console.log("Your browser not supported webgl, retry experimental-webgl")
     gl = canvas.getContext("experimental-webgl")
 }
 
-var positionBuffer = gl.createBuffer();
-
+// Setup GLSL program
 var vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderText);
 var fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderText);
-var program = createProgram(gl, vertexShader, fragmentShader)
+var program = createProgram(gl, vertexShader, fragmentShader);
 
-
+// Look up where the vertex data needs to go.
 var positionAttributeLocation = gl.getAttribLocation(program, "vertPosition");
+
+// Look up uniform locations
 var resolutionUniformLocation = gl.getUniformLocation(program, "u_resolution");
 var colorUniformLocation = gl.getUniformLocation(program, "u_color");
 
-gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-gl.clearColor(0.8, 0.8, 0.8, 1.0);
-gl.clear(gl.COLOR_BUFFER_BIT);
-gl.useProgram(program);
+// Create a buffer to put 2d clip space points in
+var positionBuffer = gl.createBuffer();
+
+// Bind it to ARRAY_BUFFER (think of it as ARRAY_BUFFER = positionBuffer)
 gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)
-// gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(titik), gl.STATIC_DRAW);
- 
+
+// Tell WebGL how to convert from clip space to pixels
+gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+
+// Tell it to use our program (pair of shaders)
+gl.useProgram(program);
+
+// Turn on the attribute
+gl.enableVertexAttribArray(positionAttributeLocation);
+
 // Tell the attribute how to get data out of positionBuffer (ARRAY_BUFFER)
 var size = 2;          // 2 components per iteration
 var type = gl.FLOAT;   // the data is 32bit floats
 var normalize = false; // don't normalize the data
 var stride = 0;        // 0 = move forward size * sizeof(type) each iteration to get the next position
 var offset = 0;        // start at the beginning of the buffer
+gl.vertexAttribPointer(
+    positionAttributeLocation, size, type, normalize, stride, offset);
 
+var persegiPanjang = []
+var garis = []
+var polygon = []
 
-gl.enableVertexAttribArray(positionAttributeLocation);
-gl.vertexAttribPointer(positionAttributeLocation, size, type, normalize, stride, offset)
-
-
-// Ini karena masih hardcode, nantinya bakalan dari user
-var persegiPanjang = [
-    {
-        position: [29, 586, 404, 555],
-        color: [0.5, 0.5, 0.5],
-        middlePoint: [0, 0],
-    },
-    {
-        position: [426, 679, 105, 167],
-        color: [1, 0, 0],
-        middlePoint: [0, 0],
-    },
-];
-
-var garis = [
-    {
-        position: [10, 100, 30, 200],
-        color: [0.5, 0.5, 0.5],
-        middlePoint: [0, 0],
-    },
-    {
-        position: [20, 400, 100, 400],
-        color: [1, 0, 0],
-        middlePoint: [0, 0],
-    },
-];
-
-for (let i = 0; i < persegiPanjang.length; i++) {
-    var x1 = persegiPanjang[i].position[0]
-    var x2 = persegiPanjang[i].position[1]
-    var y1 = persegiPanjang[i].position[2]
-    var y2 = persegiPanjang[i].position[3]
-    var titikTengah = []
-    titikTengah.push((x1 + x2)/2)
-    titikTengah.push((y1 + y2)/2)
-    persegiPanjang[i].middlePoint = titikTengah
-}
-
+/**
+ * Function to render drawing
+ */
 function drawCanvas() {
-
+    // Clear the canvas
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT);
-    
-    // Bind the position buffer.
-    // gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+        
+    // Set the resolution
     gl.uniform2f(resolutionUniformLocation, gl.canvas.width, gl.canvas.height);
-    // var m = 0;
-    for (var i = 0; i < garis.length; i++) {
-        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-        var x1 = garis[i].position[0]
-        var x2 = garis[i].position[1]
-        var y1 = garis[i].position[2]
-        var y2 = garis[i].position[3]
-        var r = garis[i].color[0]
-        var g = garis[i].color[1]
-        var b = garis[i].color[2]
-
-        createGaris(gl, x1, x2, y1, y2)
-        gl.uniform4f(colorUniformLocation, r, g, b, 1);
-        gl.drawArrays(gl.LINES, 0, 2);
+    
+    if (garis.length != 0) {
+        // Draw Line
+        console.log(garis)
+        for (let i = 0; i < garis.length; i++) {
+            gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+            var x1 = garis[i].position[0]
+            var x2 = garis[i].position[1]
+            var y1 = garis[i].position[2]
+            var y2 = garis[i].position[3]
+            var r = garis[i].color[0]
+            var g = garis[i].color[1]
+            var b = garis[i].color[2]
+    
+            createGaris(gl, x1, x2, y1, y2)
+            gl.uniform4f(colorUniformLocation, r, g, b, 1);
+            gl.drawArrays(gl.LINES, 0, 2);
+        }
     }
-    for (var j = 0; j < persegiPanjang.length; j++) {
+    for (let j = 0; j < persegiPanjang.length; j++) {
         gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
         var x1 = persegiPanjang[j].position[0]
         var x2 = persegiPanjang[j].position[1]
@@ -119,10 +99,7 @@ function drawCanvas() {
     
 }
 
-drawCanvas()
-
 // Fungsionalitas Geser Persegi Panjang
-
 var secondClickMove = false
 var chosen = []
 
@@ -156,6 +133,7 @@ canvas.addEventListener("click",function(event) {
     }
 
     if (isWantToCreate) {
+        console.log('create')
         var posX = event.pageX
         var posY = event.pageY
         if (shape === "rectangle" || shape === "square") {
@@ -277,3 +255,23 @@ canvas.addEventListener("click",function(event) {
     }
 }, false)
 
+const radioButtons = document.querySelectorAll('input[name="shape"]');
+for (const radioButton of radioButtons) {
+    radioButton.addEventListener('change', function (e) {
+        if (e.target.value == 'polygon') {
+            document.getElementById('polygonSisi').disabled = false;
+            document.getElementById('proporsiXRectangle').disabled = true;
+            document.getElementById('proporsiYRectangle').disabled = true;
+        }
+        else if (e.target.value == 'rectangle') {
+            document.getElementById('polygonSisi').disabled = true;
+            document.getElementById('proporsiXRectangle').disabled = false;
+            document.getElementById('proporsiYRectangle').disabled = false;
+        }
+        else if (e.target.value == 'line' | e.target.value == 'square') {
+            document.getElementById('polygonSisi').disabled = true;
+            document.getElementById('proporsiXRectangle').disabled = true;
+            document.getElementById('proporsiYRectangle').disabled = true;
+        }
+    })
+}
