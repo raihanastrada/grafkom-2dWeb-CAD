@@ -10,8 +10,6 @@ var polygonPoints = [];
 var polygonColor = [];
 var polygonNodes;
 
-var canvas = document.querySelector("#my-canvas");
-
 // Get A WebGL context
 var canvas = document.querySelector("#my-canvas");
 var gl = canvas.getContext("webgl")
@@ -367,6 +365,17 @@ canvas.addEventListener("click",function(event) {
                 if (checkNearGaris(garis[i].position, posX, posY)) {
                     chosen.push(i)
                     garis[i].color =  changeColor(garis[i].color, color[0], color[1], color[2])
+                }
+            }
+            drawCanvas()
+        } else if (shape === "polygon") {
+            var posX = event.pageX
+            var posY = event.pageY
+            for (let i = polygon.length-1; i >= 0; i--) {
+                if (checkInPolygon(polygon[i].position, posX, posY)) {
+                    chosen.push(i)
+                    polygon[i].color =  changeColor(polygon[i].color, color[0], color[1], color[2])
+                    break
                 }
             }
             drawCanvas()
