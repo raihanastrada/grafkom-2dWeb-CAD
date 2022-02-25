@@ -213,6 +213,30 @@ canvas.addEventListener("click",function(event) {
                 secondClickMove = false
                 chosen = []
             }
+        } else if (shape === "line") {
+            if (!secondClickMove) {
+                var posX = event.pageX
+                var posY = event.pageY
+                for (let i = 0; i < garis.length; i++) {
+                    if (checkNearGaris(garis[i].position, posX, posY)) {
+                        chosen.push(i)
+                        secondClickMove = true
+                    }
+                }
+            } else { // secondCliceMove = true
+                var posX = event.pageX
+                var posY = event.pageY
+                chosen.forEach(idx => {
+                    var deltaX = posX - garis[idx].middlePoint[0]
+                    var deltaY = posY - garis[idx].middlePoint[1]
+                    var temp = translasiGaris(garis[idx].position, garis[idx].middlePoint, deltaX, deltaY)
+                    garis[idx].position = temp[0]
+                    garis[idx].middlePoint = temp[1]
+                });
+                drawCanvas()
+                secondClickMove = false
+                chosen = []
+            }
         }
 
     }
@@ -226,6 +250,16 @@ canvas.addEventListener("click",function(event) {
                 if (checkInsidePersegiPanjang(persegiPanjang[i].position, posX, posY)) {
                     chosen.push(i)
                     persegiPanjang[i].color =  changeColor(persegiPanjang[i].color, color[0], color[1], color[2])
+                }
+            }
+            drawCanvas()
+        } else if (shape === "line") {
+            var posX = event.pageX
+            var posY = event.pageY
+            for (let i = 0; i < garis.length; i++) {
+                if (checkNearGaris(garis[i].position, posX, posY)) {
+                    chosen.push(i)
+                    garis[i].color =  changeColor(garis[i].color, color[0], color[1], color[2])
                 }
             }
             drawCanvas()
@@ -251,6 +285,37 @@ canvas.addEventListener("click",function(event) {
                 }
             }
             drawCanvas()
+        } else if (shape === "line") {
+            if (!secondClickMove) {
+                let x1 = false
+                let x2 = false
+                var posX = event.pageX
+                var posY = event.pageY
+                for (let i = 0; i < garis.length; i++) {
+                    if (checkNearGaris(garis[i].position, posX, posY)) {
+                        chosen.push(i)
+                        secondClickMove = true
+                        if(checkJarak(garis[i].position, posX)) {
+                            x1 = true
+                        } else { x2 = true }
+                    }
+                }
+            } else { //secondClickMove = true
+                var posX = event.pageX
+                var posY = event.pageY
+                chosen.forEach(idx => {
+                    if (x1) { //x1 true
+                        garis[idx].position[0] = posX
+                        garis[idx].position[2] = posY
+                    } else { //x2 true
+                        garis[idx].position[1] = posX
+                        garis[idx].position[3] = posY
+                    }
+                });
+                drawCanvas()
+                secondClickMove = false
+                chosen = []
+            }
         }
     }
 }, false)
