@@ -1,5 +1,15 @@
 var mouseXPos = 0
 var mouseYPos = 0
+
+// Fungsionalitas Geser Persegi Panjang
+var secondClickMove = false
+var chosen = []
+
+var isCreatingPolygon = false;
+var polygonPoints = [];
+var polygonColor = [];
+var polygonNodes;
+
 var canvas = document.querySelector("#my-canvas");
 
 // Get A WebGL context
@@ -126,19 +136,18 @@ function drawCanvas() {
         // Draw each Polygon
         for (let i = 0; i < polygon.length; i++) {
             gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-            var x1 = polygon[i].position[0]
-            var x2 = polygon[i].position[1]
-            var y1 = polygon[i].position[2]
-            var y2 = polygon[i].position[3]
+
             var r = polygon[i].color[0]
             var g = polygon[i].color[1]
             var b = polygon[i].color[2]
             
-            createPolygon(gl, x1, x2, y1, y2)
+            createPolygon(gl, polygon[i].position)
             gl.uniform4f(colorUniformLocation, r, g, b, 1);
-            var primitiveType = gl.TRIANGLES;
+
+            var primitiveType = gl.TRIANGLE_FAN;
             var offset = 0;
-            var count = 6;
+            var count = polygon[i].position.length/2;
+
             gl.drawArrays(primitiveType, offset, count);
         }
     }
@@ -238,32 +247,29 @@ canvas.addEventListener("click",function(event) {
             })
             drawCanvas()
         } else if (shape === "polygon") {
-            console.log('createPolygon')
             if (!isCreatingPolygon) {
-                console.log('1')
                 polygonNodes = jumlahSisiPolygon;
-                console.log(polygonNodes)
-                polygonPoints.push([posX, posY])
+                polygonPoints.push(posX);
+                polygonPoints.push(posY);
                 polygonColor = [color[0], color[1], color[2]]
                 isCreatingPolygon = true;  
             }
             else {
-                console.log('2')
-                console.log(polygonNodes)
-                console.log(polygonPoints.length)
-                if (polygonPoints.length != polygonNodes) {
-                    polygonPoints.push([posX, posY])
-                } else {
+                polygonPoints.push(posX);
+                polygonPoints.push(posY);
+
+                if (polygonPoints.length == polygonNodes*2) {
                     // Push to polygon array & reset
                     polygon.push({
                         position: polygonPoints,
                         color: polygonColor
                     })
+
                     polygonNodes = 0;
                     polygonPoints = [];
                     polygonColor = [];
                     isCreatingPolygon = false;
-                    console.log(polygon)
+                    drawCanvas()
                 }    
             }
         }
