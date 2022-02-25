@@ -46,8 +46,9 @@ var offset = 0;        // start at the beginning of the buffer
 gl.vertexAttribPointer(
     positionAttributeLocation, size, type, normalize, stride, offset);
 
-var persegiPanjang = []
 var garis = []
+var persegi = []
+var persegiPanjang = []
 var polygon = []
 
 /**
@@ -55,15 +56,14 @@ var polygon = []
  */
 function drawCanvas() {
     // Clear the canvas
-    gl.clearColor(0, 0, 0, 0);
+    gl.clearColor(0.9, 0.9, 0.9, 1);
     gl.clear(gl.COLOR_BUFFER_BIT);
         
     // Set the resolution
     gl.uniform2f(resolutionUniformLocation, gl.canvas.width, gl.canvas.height);
     
     if (garis.length != 0) {
-        // Draw Line
-        console.log(garis)
+        // Draw each Line
         for (let i = 0; i < garis.length; i++) {
             gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
             var x1 = garis[i].position[0]
@@ -79,22 +79,68 @@ function drawCanvas() {
             gl.drawArrays(gl.LINES, 0, 2);
         }
     }
-    for (let j = 0; j < persegiPanjang.length; j++) {
-        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-        var x1 = persegiPanjang[j].position[0]
-        var x2 = persegiPanjang[j].position[1]
-        var y1 = persegiPanjang[j].position[2]
-        var y2 = persegiPanjang[j].position[3]
-        var r = persegiPanjang[j].color[0]
-        var g = persegiPanjang[j].color[1]
-        var b = persegiPanjang[j].color[2]
-        
-        createPersegiPanjang(gl, x1, x2, y1, y2)
-        gl.uniform4f(colorUniformLocation, r, g, b, 1);
-        var primitiveType = gl.TRIANGLES;
-        var offset = 0;
-        var count = 6;
-        gl.drawArrays(primitiveType, offset, count);
+
+    if (persegi.length != 0) {
+        // Draw each Square
+        for (let i = 0; i < persegi.length; i++) {
+            gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+            var x1 = persegi[i].position[0]
+            var x2 = persegi[i].position[1]
+            var y1 = persegi[i].position[2]
+            var y2 = persegi[i].position[3]
+            var r = persegi[i].color[0]
+            var g = persegi[i].color[1]
+            var b = persegi[i].color[2]
+            
+            createPersegiPanjang(gl, x1, x2, y1, y2)
+            gl.uniform4f(colorUniformLocation, r, g, b, 1);
+            var primitiveType = gl.TRIANGLES;
+            var offset = 0;
+            var count = 6;
+            gl.drawArrays(primitiveType, offset, count);
+        }
+    }
+
+    if (persegiPanjang.length != 0) {
+        // Draw each Rectangle
+        for (let i = 0; i < persegiPanjang.length; i++) {
+            gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+            var x1 = persegiPanjang[i].position[0]
+            var x2 = persegiPanjang[i].position[1]
+            var y1 = persegiPanjang[i].position[2]
+            var y2 = persegiPanjang[i].position[3]
+            var r = persegiPanjang[i].color[0]
+            var g = persegiPanjang[i].color[1]
+            var b = persegiPanjang[i].color[2]
+            
+            createPersegiPanjang(gl, x1, x2, y1, y2)
+            gl.uniform4f(colorUniformLocation, r, g, b, 1);
+            var primitiveType = gl.TRIANGLES;
+            var offset = 0;
+            var count = 6;
+            gl.drawArrays(primitiveType, offset, count);
+        }
+    }
+
+    if (polygon.length != 0) {
+        // Draw each Polygon
+        for (let i = 0; i < polygon.length; i++) {
+            gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+            var x1 = polygon[i].position[0]
+            var x2 = polygon[i].position[1]
+            var y1 = polygon[i].position[2]
+            var y2 = polygon[i].position[3]
+            var r = polygon[i].color[0]
+            var g = polygon[i].color[1]
+            var b = polygon[i].color[2]
+            
+            createPolygon(gl, x1, x2, y1, y2)
+            gl.uniform4f(colorUniformLocation, r, g, b, 1);
+            var primitiveType = gl.TRIANGLES;
+            var offset = 0;
+            var count = 6;
+            gl.drawArrays(primitiveType, offset, count);
+        }
     }
     
 }
@@ -102,6 +148,11 @@ function drawCanvas() {
 // Fungsionalitas Geser Persegi Panjang
 var secondClickMove = false
 var chosen = []
+
+var isCreatingPolygon = false;
+var polygonPoints = [];
+var polygonColor = [];
+var polygonNodes;
 
 canvas.addEventListener("click",function(event) {
     var isWantToMove = false
@@ -114,8 +165,7 @@ canvas.addEventListener("click",function(event) {
     var option = getOption()
     var size = getShapeSize()
     var color = getColor()
-
-    var jumlahSisiPolygon = 0
+    var jumlahSisiPolygon = getPolygonSisi()
 
     console.log("Ini shape: ", shape)
     console.log("Ini color: ", color)
@@ -125,7 +175,6 @@ canvas.addEventListener("click",function(event) {
         isWantToCreate = true
     } else if (option === "move") {
         isWantToMove = true
-        
     } else if (option === "changeColor") {
         isWantToChangeColor = true
     } else if (option === "changeSize") {
@@ -162,9 +211,7 @@ canvas.addEventListener("click",function(event) {
                 color: [color[0], color[1], color[2]],
                 middlePoint: [midPointX, midPointY]
             })
-            console.log(persegiPanjang) 
             drawCanvas()
-
         } else if (shape === "line") {
             var x1 = posX - (size * 20)
             var x2 = posX + (size * 20)
@@ -180,7 +227,34 @@ canvas.addEventListener("click",function(event) {
             })
             drawCanvas()
         } else if (shape === "polygon") {
-            console.log("INSERT TO ARRAY OF POLYGON OBJECT")
+            console.log('createPolygon')
+            if (!isCreatingPolygon) {
+                console.log('1')
+                polygonNodes = jumlahSisiPolygon;
+                console.log(polygonNodes)
+                polygonPoints.push([posX, posY])
+                polygonColor = [color[0], color[1], color[2]]
+                isCreatingPolygon = true;  
+            }
+            else {
+                console.log('2')
+                console.log(polygonNodes)
+                console.log(polygonPoints.length)
+                if (polygonPoints.length != polygonNodes) {
+                    polygonPoints.push([posX, posY])
+                } else {
+                    // Push to polygon array & reset
+                    polygon.push({
+                        position: polygonPoints,
+                        color: polygonColor
+                    })
+                    polygonNodes = 0;
+                    polygonPoints = [];
+                    polygonColor = [];
+                    isCreatingPolygon = false;
+                    console.log(polygon)
+                }    
+            }
         }
 
     }
@@ -275,3 +349,5 @@ for (const radioButton of radioButtons) {
         }
     })
 }
+
+drawCanvas()
