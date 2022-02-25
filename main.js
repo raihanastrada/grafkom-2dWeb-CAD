@@ -206,11 +206,20 @@ canvas.addEventListener("click",function(event) {
             var midPointX = (x1 + x2) / 2
             var midPointY = (y1 + y2) / 2
             
-            persegiPanjang.push({
+            if (shape === "rectangle") {
+                persegiPanjang.push({
                 position: [x1, x2, y1, y2],
                 color: [color[0], color[1], color[2]],
                 middlePoint: [midPointX, midPointY]
-            })
+                })
+            } else {
+                persegi.push({
+                position: [x1, x2, y1, y2],
+                color: [color[0], color[1], color[2]],
+                middlePoint: [midPointX, midPointY]
+                })
+            }
+            
             drawCanvas()
         } else if (shape === "line") {
             var x1 = posX - (size * 20)
@@ -265,24 +274,40 @@ canvas.addEventListener("click",function(event) {
                 // The first click, check if user click inside a rectangle
                 var posX = event.pageX
                 var posY = event.pageY
-                for (let i = 0; i < persegiPanjang.length; i++) {
-                    if (checkInsidePersegiPanjang(persegiPanjang[i].position, posX, posY)) {
+                var objToUse = []
+                if (shape === "rectangle") {
+                    objToUse = persegiPanjang
+                } else {
+                    objToUse = persegi
+                }
+                for (let i = 0; i < objToUse.length; i++) {
+                    if (checkInsidePersegiPanjang(objToUse[i].position, posX, posY)) {
                         chosen.push(i)
                         secondClickMove = true
                     }
-                }
-                
+                }             
             } else {
-                // Second Click, move the rectangular
+                // Second Click, move the rectangular or square
                 var posX = event.pageX
                 var posY = event.pageY
-                chosen.forEach(idx => {
-                    var deltaX = posX - persegiPanjang[idx].middlePoint[0]
-                    var deltaY = posY - persegiPanjang[idx].middlePoint[1]
-                    var temp = translasiPersegiPanjang(persegiPanjang[idx].position, persegiPanjang[idx].middlePoint, deltaX, deltaY)
-                    persegiPanjang[idx].position = temp[0]
-                    persegiPanjang[idx].middlePoint = temp[1]
-                });
+                if (shape === "rectangle") {
+                    chosen.forEach(idx => {
+                        var deltaX = posX - persegiPanjang[idx].middlePoint[0]
+                        var deltaY = posY - persegiPanjang[idx].middlePoint[1]
+                        var temp = translasiPersegiPanjang(persegiPanjang[idx].position, persegiPanjang[idx].middlePoint, deltaX, deltaY)
+                        persegiPanjang[idx].position = temp[0]
+                        persegiPanjang[idx].middlePoint = temp[1]
+                    });
+                } else {
+                    chosen.forEach(idx => {
+                        var deltaX = posX - persegi[idx].middlePoint[0]
+                        var deltaY = posY - persegi[idx].middlePoint[1]
+                        var temp = translasiPersegiPanjang(persegi[idx].position, persegi[idx].middlePoint, deltaX, deltaY)
+                        persegi[idx].position = temp[0]
+                        persegi[idx].middlePoint = temp[1]
+                    });
+                }
+
                 drawCanvas()
                 secondClickMove = false
                 chosen = []
@@ -296,32 +321,42 @@ canvas.addEventListener("click",function(event) {
             // Change Color for chosen rectangle or square
             var posX = event.pageX
             var posY = event.pageY
-            for (let i = 0; i < persegiPanjang.length; i++) {
-                if (checkInsidePersegiPanjang(persegiPanjang[i].position, posX, posY)) {
-                    chosen.push(i)
-                    persegiPanjang[i].color =  changeColor(persegiPanjang[i].color, color[0], color[1], color[2])
+            
+            if (shape === "rectangle") {
+                for (let i = 0; i < persegiPanjang.length; i++) {
+                    if (checkInsidePersegiPanjang(persegiPanjang[i].position, posX, posY)) {
+                        chosen.push(i)
+                        persegiPanjang[i].color =  changeColor(persegiPanjang[i].color, color[0], color[1], color[2])
+                    }
+                }
+            } else {
+                for (let i = 0; i < persegi.length; i++) {
+                    if (checkInsidePersegiPanjang(persegi[i].position, posX, posY)) {
+                        chosen.push(i)
+                        persegi[i].color =  changeColor(persegi[i].color, color[0], color[1], color[2])
+                    }
                 }
             }
+
             drawCanvas()
         }
     }
 
     if (isWantToChangeSize) {
         if (shape === "square") {
-            // Change Color for chosen rectangle or square
+            // Change Color for chosen square
             var posX = event.pageX
             var posY = event.pageY
-            for (let i = 0; i < persegiPanjang.length; i++) {
-                if (checkInsidePersegiPanjang(persegiPanjang[i].position, posX, posY)) {
-                    chosen.push(i)
+            for (let i = 0; i < persegi.length; i++) {
+                if (checkInsidePersegiPanjang(persegi[i].position, posX, posY)) {
                     proporsiX = 10
                     proporsiY = 10
-                    persegiPanjang[i].position[0] = persegiPanjang[i].position[0] - (size * proporsiX)
-                    persegiPanjang[i].position[1] = persegiPanjang[i].position[1] + (size * proporsiX)
-                    persegiPanjang[i].position[2] = persegiPanjang[i].position[2] - (size * proporsiY)
-                    persegiPanjang[i].position[3] = persegiPanjang[i].position[3] + (size * proporsiY)
-                    persegiPanjang[i].middlePoint[0] = (persegiPanjang[i].position[0] + persegiPanjang[i].position[1]) / 2
-                    persegiPanjang[i].middlePoint[1] = (persegiPanjang[i].position[2] + persegiPanjang[i].position[3]) / 2
+                    persegi[i].position[0] = persegi[i].position[0] - (size * proporsiX)
+                    persegi[i].position[1] = persegi[i].position[1] + (size * proporsiX)
+                    persegi[i].position[2] = persegi[i].position[2] - (size * proporsiY)
+                    persegi[i].position[3] = persegi[i].position[3] + (size * proporsiY)
+                    persegi[i].middlePoint[0] = (persegi[i].position[0] + persegi[i].position[1]) / 2
+                    persegi[i].middlePoint[1] = (persegi[i].position[2] + persegi[i].position[3]) / 2
                 }
             }
             drawCanvas()
