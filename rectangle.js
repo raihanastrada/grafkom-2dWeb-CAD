@@ -1,14 +1,3 @@
-// function createPersegiPanjang(gl, x1, x2, y1, y2) {
-
-//     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-//         x1, y1,
-//         x2, y1,
-//         x1, y2,
-//         x1, y2,
-//         x2, y1,
-//         x2, y2]), gl.STATIC_DRAW)
-// }
-
 function createPersegiPanjang(gl, x1, y1, x2, y2, x3, y3, x4, y4) {
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
         x1, y1,
@@ -26,16 +15,20 @@ function checkInsidePersegiPanjang(arrPosObject, x, y) {
     }
 }
 
-function checkNearPersegiPanjang(arrPosObject, x, y) {
-    var jarak2Titik = 0
-    for (let i = 0; i < arrPosObject.length; i = i + 2) {
+function checkNearNode(arrPosObject, x, y) {
+    var jarak2Titik = 999999
+    let i = 0;
+    do {
+        let next = (i + 2) % arrPosObject.length;
         jarak2Titik = Math.pow(x - arrPosObject[i], 2) + Math.pow(y - arrPosObject[i+1], 2)
-        if (jarak2Titik <= 200) {
+        if (jarak2Titik <= 750) {
+            // console.log("jarak", jarak2Titik)
             return [true, i, i+1]
-        }    
-    }
-     return [false, -1, -1]
-
+        }
+        i = next;
+    } while (i != 0);
+    // console.log("jarak", jarak2Titik)
+    return [false, -1, -1]
 }
 
 

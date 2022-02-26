@@ -40,7 +40,7 @@ function getProporsiXYRectangle() {
 }
 
 function saveFile(params) {
-    console.log("Save button clicked")
+    // console.log("Save button clicked")
     const a = document.createElement('a');
     const isi = [
         "Persegi Panjang: ",
@@ -56,13 +56,13 @@ function saveFile(params) {
     a.href = URL.createObjectURL(blob);
     a.download = 'CAD-Download';
     a.click();
-    console.log("HERE")
+    // console.log("HERE")
 }
 
 function loadFile(params) {
-    console.log("Load button clicked")
+    // console.log("Load button clicked")
     var file = document.getElementById("load")
-    console.log(file.value)
+    // console.log(file.value)
 
 }
 

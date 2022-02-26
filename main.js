@@ -189,10 +189,6 @@ canvas.addEventListener("click",function(event) {
     var color = getColor()
     var jumlahSisiPolygon = getPolygonSisi()
 
-    console.log("Ini shape: ", shape)
-    console.log("Ini color: ", color)
-    console.log("Option: ", option)
-
     if (option === "create") {
         isWantToCreate = true
     } else if (option === "move") {
@@ -206,7 +202,6 @@ canvas.addEventListener("click",function(event) {
     }
 
     if (isWantToCreate) {
-        console.log('create')
         if (shape !== "polygon" && size <= 0) {
             alert("Ukuran tidak boleh <= 0")
             return
@@ -306,13 +301,12 @@ canvas.addEventListener("click",function(event) {
                     objToUse = persegi
                 }
                 for (let i = 0; i < objToUse.length; i++) {
-                    geserTitikPersegi = checkNearPersegiPanjang(objToUse[i].position, posX, posY)
+                    geserTitikPersegi = checkNearNode(objToUse[i].position, posX, posY)
                     if (geserTitikPersegi[0]) {
                         geserTitikPersegi.push(i)
-                        chosen.push(geserTitikPersegi)    
+                        chosen.push(geserTitikPersegi)
+                        secondClickMove = true    
                     }
-                    secondClickMove = true
-                    
                 }             
             } else {
                 // Second Click, move the rectangular or square
@@ -336,6 +330,31 @@ canvas.addEventListener("click",function(event) {
             }
         } else if (shape === "line") {
             isWantToChangeSize = true
+        } else if (shape === "polygon") {
+            if (!secondClickMove) {
+                // The first click, check if user click near polygon nodes
+                var posX = event.pageX
+                var posY = event.pageY
+                for (let i = polygon.length-1; i >= 0; i--) {
+                    geserTitikPolygon = checkNearNode(polygon[i].position, posX, posY)
+                    if (geserTitikPolygon[0]) {
+                        geserTitikPolygon.push(i)
+                        chosen = geserTitikPolygon
+                        secondClickMove = true
+                        break
+                    }
+                }
+            } else {
+                // Second Click, move the node
+                var posX = event.pageX
+                var posY = event.pageY
+                polygon[geserTitikPolygon[3]].position[geserTitikPolygon[1]] = posX
+                polygon[geserTitikPolygon[3]].position[geserTitikPolygon[2]] = posY
+                
+                drawCanvas()
+                secondClickMove = false
+                chosen = []
+            }
         }
     }
 
@@ -360,7 +379,6 @@ canvas.addEventListener("click",function(event) {
                         if (checkInPolygon(objToUse[i].position, posX, posY)) {
                             secondClickMove = true
                             chosenIdx = i;
-                            console.log("HERE: ", chosenIdx)
                             break
                         }
                     }
@@ -437,8 +455,7 @@ canvas.addEventListener("click",function(event) {
                     }
                 }
             } else {
-                console.log(chosenIdx)
-                // Second Click, move the rectangular or square
+                // Second Click, move the polygon
                 var posX = event.pageX
                 var posY = event.pageY
                 translasiPolygon(polygon[chosenIdx].position, posX, posY)
