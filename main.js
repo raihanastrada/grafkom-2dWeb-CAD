@@ -10,8 +10,6 @@ var polygonPoints = [];
 var polygonColor = [];
 var polygonNodes;
 
-var canvas = document.querySelector("#my-canvas");
-
 // Get A WebGL context
 var canvas = document.querySelector("#my-canvas");
 var gl = canvas.getContext("webgl")
@@ -169,6 +167,7 @@ function drawCanvas() {
 // Fungsionalitas Geser Persegi Panjang
 var secondClickMove = false
 var chosen = []
+var chosenIdx;
 var isX1Change = false
 var isX2Change = false
 
@@ -367,6 +366,29 @@ canvas.addEventListener("click",function(event) {
                 secondClickMove = false
                 chosen = []
             }
+        } else if (shape === "polygon") {
+            if (!secondClickMove) {
+                // The first click, check if user click inside a polygon
+                var posX = event.pageX
+                var posY = event.pageY
+                for (let i = polygon.length-1; i >= 0; i--) {
+                    if (checkInPolygon(polygon[i].position, posX, posY)) {
+                        secondClickMove = true
+                        chosenIdx = i;
+                        break
+                    }
+                }
+            } else {
+                console.log(chosenIdx)
+                // Second Click, move the rectangular or square
+                var posX = event.pageX
+                var posY = event.pageY
+                translasiPolygon(polygon[chosenIdx].position, posX, posY)
+                
+                drawCanvas()
+                secondClickMove = false
+                chosen = []
+            }
         }
 
     }
@@ -401,6 +423,17 @@ canvas.addEventListener("click",function(event) {
                 if (checkNearGaris(garis[i].position, posX, posY)) {
                     chosen.push(i)
                     garis[i].color =  changeColor(garis[i].color, color[0], color[1], color[2])
+                }
+            }
+            drawCanvas()
+        } else if (shape === "polygon") {
+            var posX = event.pageX
+            var posY = event.pageY
+            for (let i = polygon.length-1; i >= 0; i--) {
+                if (checkInPolygon(polygon[i].position, posX, posY)) {
+                    chosen.push(i)
+                    polygon[i].color =  changeColor(polygon[i].color, color[0], color[1], color[2])
+                    break
                 }
             }
             drawCanvas()
