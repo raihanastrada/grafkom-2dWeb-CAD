@@ -207,6 +207,10 @@ canvas.addEventListener("click",function(event) {
 
     if (isWantToCreate) {
         console.log('create')
+        if (shape !== "polygon" && size <= 0) {
+            alert("Ukuran tidak boleh <= 0")
+            return
+        }
         var posX = event.pageX
         var posY = event.pageY
         if (shape === "rectangle" || shape === "square") {
