@@ -15,10 +15,45 @@
         <button id="petunjuk" onclick="displayHelp()">Baca Petunjuk</button>
         <div id="display-help" class="display-help" style="display:none;">
             <h2>Petunjuk</h2>
-            <ol>
-                <li>1. Blabla</li>
-                <li>2. Blabla</li>
-            </ol>
+            <ul style="list-style: none; padding-left: 0;">
+                <h3><li>Membuat Garis, Persegi, Persegi Panjang, Poligon</li></h3>
+                <ul>
+                    <li style="margin: 10px 0;"><strong>Garis</strong> : Pilih "Buat Shape" pada Opsi dan "Line" pada Shape, atur pada bagian Ukuran agar tidak 0 kemudian klik 1x pada canvas</li>
+                    <li style="margin: 10px 0;"><strong>Persegi</strong> : Pilih "Buat Shape" pada Opsi dan "Square" pada Shape, atur pada bagian Ukuran agar tidak 0 kemudian klik 1x pada canvas</li>
+                    <li style="margin: 10px 0;"><strong>Persegi Panjang</strong> : Pilih "Buat Shape" pada Opsi dan "Rectangle" pada Shape, atur proporsi panjang X dan Y, atur pada bagian Ukuran agar tidak 0 kemudian klik 1x pada canvas</li>
+                    <li style="margin: 10px 0;"><strong>Poligon</strong> : Pilih "Buat Shape" pada Opsi dan "Polygon" pada Shape, atur pada bagian Ukuran agar tidak 0 kemudian klik 1x pada canvas</li>
+                    <li style="list-style: none;">Catatan : ukuran dan warna dapat diubah pada bagian Ukuran dan Warna</li>
+                </ul>
+                <h3><li>Menggeser titik kontrol/simpul dengan mouse</li></h3>
+                <ol>
+                    <li style="margin: 10px 0;">Pilih "Geser Shape" pada Opsi dan shape yang ingin Anda geser pada Shape</li>
+                    <li style="margin: 10px 0;">Klik gambar yang ingin Anda geser kemudian klik lagi pada tempat lain untuk menggesernya</li>
+                </ol>
+                <h3><li>Mengubah panjang garis</li></h3>
+                <ol>
+                    <li style="margin: 10px 0;">Pilih "Ubah Ukuran" pada Opsi dan "Line" pada Shape</li>
+                    <li style="margin: 10px 0;">Arahkan mouse kepada garis yang ingin dipanjangkan lalu klik salah satu dari kedua titik ujungnya (vertex)</li>
+                    <li style="margin: 10px 0;">Klik kembali pada titik sembarang di canvas dan titik/vertex yang telah diklik sebelumnya akan berpindah sehingga garis dapat dipanjangkan maupun dipendekkan</li>
+                </ol>
+                <h3><li>Mengubah ukuran sisi persegi</li></h3>
+                <ol>
+                    <li style="margin: 10px 0;">Pilih "Ubah Ukuran" pada Opsi dan "Square" pada Shape</li>
+                    <li style="margin: 10px 0;">Atur ukuran yang diinginkan pada Ukuran : minus(-) apabila ingin mengecilkan dan plus(+) apabila ingin membesarkan</li>
+                    <li style="margin: 10px 0;">Klik salah satu persegi yang ingin diubah ukurannya</li>
+                </ol>
+                <h3><li>Mengubah warna poligon</li></h3>
+                <ol>
+                    <li style="margin: 10px 0;">Pilih "Ganti Warna" pada Opsi dan "Polygon" pada Shape</li>
+                    <li style="margin: 10px 0;">Atur warna yang Anda inginkan pada Warna</li>
+                    <li style="margin: 10px 0;">Klik salah satu bentuk yang ingin diubah warnanya</li>
+                    <li style="margin: 10px 0;">Catatan : seluruh bentuk/shape dapat diubah warnanya</li>
+                </ol>
+                <h3><li>Save dan Load</li></h3>
+                <ul>
+                    <li style="margin: 10px 0;">Untuk menyimpan pekerjaan, klik tombol Save pada Simpan/Unggah Model</li>
+                    <li style="margin: 10px 0;">Untuk mengunggah pekerjaan, klik tombol Choose File pada Simpan/Unggah Model</li>
+                </ul>
+            </ul>
         </div>
         <div class="menu-option">
             <h3>Opsi</h3>
@@ -31,7 +66,7 @@
             <input type="radio" name="option" id="changeColor" value="changeColor">
             <label for="changeColor"> Ganti Warna</label>
             <input type="radio" name="option" id="changeSize" value="changeSize">
-            <label for="changeSize"> Ubah ukuran</label>
+            <label for="changeSize"> Ubah Ukuran</label>
         </div>
         <div class="menu">
             <h3>Shape</h3>
