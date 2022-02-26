@@ -9,6 +9,17 @@ function createPersegiPanjang(gl, x1, x2, y1, y2) {
         x2, y2]), gl.STATIC_DRAW)
 }
 
+function createPersegiPanjang2(gl, x1, y1, x2, y2, x3, y3, x4, y4) {
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+        x1, y1,
+        x2, y2,
+        x3, y3,
+        x3, y3,
+        x2, y2,
+        x4, y4,
+    ]), gl.STATIC_DRAW)
+}
+
 function checkInsidePersegiPanjang(arrPosObject, x, y) {
     if ((x >= arrPosObject[0] && x <= arrPosObject[1]) && (y >= arrPosObject[2] && y <= arrPosObject[3])) {
         return true

@@ -60,6 +60,8 @@ var garis = []
 var persegi = []
 var persegiPanjang = []
 var polygon = []
+var persegiPanjang2 = []
+var persegi2 = []
 
 /**
  * Function to render drawing
@@ -90,19 +92,24 @@ function drawCanvas() {
         }
     }
 
-    if (persegi.length != 0) {
+    if (persegi2.length != 0) {
         // Draw each Square
-        for (let i = 0; i < persegi.length; i++) {
+        for (let i = 0; i < persegi2.length; i++) {
             gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-            var x1 = persegi[i].position[0]
-            var x2 = persegi[i].position[1]
-            var y1 = persegi[i].position[2]
-            var y2 = persegi[i].position[3]
-            var r = persegi[i].color[0]
-            var g = persegi[i].color[1]
-            var b = persegi[i].color[2]
+            var x1 = persegi2[i].position[0]
+            var y1 = persegi2[i].position[1]
+            var x2 = persegi2[i].position[2]
+            var y2 = persegi2[i].position[3]
+            var x3 = persegi2[i].position[4]
+            var y3 = persegi2[i].position[5]
+            var x4 = persegi2[i].position[6]
+            var y4 = persegi2[i].position[7]
+            var r = persegi2[i].color[0]
+            var g = persegi2[i].color[1]
+            var b = persegi2[i].color[2]
             
-            createPersegiPanjang(gl, x1, x2, y1, y2)
+            // createPersegiPanjang(gl, x1, x2, y1, y2)
+            createPersegiPanjang2(gl, x1, y1, x2, y2, x3, y3, x4, y4)
             gl.uniform4f(colorUniformLocation, r, g, b, 1);
             var primitiveType = gl.TRIANGLES;
             var offset = 0;
@@ -111,19 +118,24 @@ function drawCanvas() {
         }
     }
 
-    if (persegiPanjang.length != 0) {
+    if (persegiPanjang2.length != 0) {
         // Draw each Rectangle
-        for (let i = 0; i < persegiPanjang.length; i++) {
+        for (let i = 0; i < persegiPanjang2.length; i++) {
             gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-            var x1 = persegiPanjang[i].position[0]
-            var x2 = persegiPanjang[i].position[1]
-            var y1 = persegiPanjang[i].position[2]
-            var y2 = persegiPanjang[i].position[3]
-            var r = persegiPanjang[i].color[0]
-            var g = persegiPanjang[i].color[1]
-            var b = persegiPanjang[i].color[2]
+            var x1 = persegiPanjang2[i].position[0]
+            var y1 = persegiPanjang2[i].position[1]
+            var x2 = persegiPanjang2[i].position[2]
+            var y2 = persegiPanjang2[i].position[3]
+            var x3 = persegiPanjang2[i].position[4]
+            var y3 = persegiPanjang2[i].position[5]
+            var x4 = persegiPanjang2[i].position[6]
+            var y4 = persegiPanjang2[i].position[7]
+            var r = persegiPanjang2[i].color[0]
+            var g = persegiPanjang2[i].color[1]
+            var b = persegiPanjang2[i].color[2]
             
-            createPersegiPanjang(gl, x1, x2, y1, y2)
+            // createPersegiPanjang(gl, x1, x2, y1, y2)
+            createPersegiPanjang2(gl, x1, y1, x2, y2, x3, y3, x4, y4)
             gl.uniform4f(colorUniformLocation, r, g, b, 1);
             var primitiveType = gl.TRIANGLES;
             var offset = 0;
@@ -218,16 +230,27 @@ canvas.addEventListener("click",function(event) {
             var midPointY = (y1 + y2) / 2
             
             if (shape === "rectangle") {
-                persegiPanjang.push({
-                position: [x1, x2, y1, y2],
-                color: [color[0], color[1], color[2]],
-                middlePoint: [midPointX, midPointY]
+                // persegiPanjang.push({
+                // position: [x1, x2, y1, y2],
+                // color: [color[0], color[1], color[2]],
+                // middlePoint: [midPointX, midPointY]
+                // })
+
+                persegiPanjang2.push({
+                    position: [x1, y1, x2, y1, x1, y2, x2, y2],
+                    color: [color[0], color[1], color[2]],
+                    middlePoint: [midPointX, midPointY]
                 })
             } else {
-                persegi.push({
-                position: [x1, x2, y1, y2],
-                color: [color[0], color[1], color[2]],
-                middlePoint: [midPointX, midPointY]
+                // persegi.push({
+                // position: [x1, x2, y1, y2],
+                // color: [color[0], color[1], color[2]],
+                // middlePoint: [midPointX, midPointY]
+                // })
+                persegi2.push({
+                    position: [x1, y1, x2, y1, x1, y2, x2, y2],
+                    color: [color[0], color[1], color[2]],
+                    middlePoint: [midPointX, midPointY]
                 })
             }
             
