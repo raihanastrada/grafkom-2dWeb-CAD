@@ -7,9 +7,9 @@ function createGaris(gl, x1, x2, y1, y2) {
 function checkNearGaris(arrPosObject, x, y) {
     var maxX = Math.max(arrPosObject[0], arrPosObject[1])
     var minX = Math.min(arrPosObject[0], arrPosObject[1])
-    var maxY = Math.max(arrPosObject[1], arrPosObject[2])
-    var minY = Math.min(arrPosObject[1], arrPosObject[2])
-    if ((x >= minX-10 && x <= maxX+10) || (y >= minY-10 && y <= maxY+10)) {
+    var maxY = Math.max(arrPosObject[2], arrPosObject[3])
+    var minY = Math.min(arrPosObject[2], arrPosObject[3])
+    if ((x >= minX-35 && x <= maxX+35) && (y >= minY-35 && y <= maxY+35)) {
         return true
     }
 }
