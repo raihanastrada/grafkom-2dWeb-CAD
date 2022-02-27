@@ -112,9 +112,12 @@ function getShape() {
 
 function displayHelp() {
     var x = document.getElementById("display-help");
+    var buttonPetunjuk = document.getElementById("petunjuk")
     if (x.style.display === "none") {
       x.style.display = "block";
+      buttonPetunjuk.innerText = "Tutup Petunjuk"
     } else {
       x.style.display = "none";
+      buttonPetunjuk.innerText = "Baca Petunjuk"
     }
   }
